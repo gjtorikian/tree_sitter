@@ -1,0 +1,32 @@
+name: Tag and Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "lib/tree_sitter/version.rb"
+  pull_request_target:
+    types:
+      - closed
+
+permissions:
+  pull-requests: write
+  contents: write
+  id-token: write
+  actions: write
+
+jobs:
+  ruby:
+    uses: gjtorikian/actions/.github/workflows/ruby_gem_release.yml@main
+    secrets:
+      gh_token: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      gem_name: tree_sitter
+      version_filepath: lib/tree_sitter/version.rb
+      oxidized: true
+      include_musl: true
+      prepare: ${{ github.event_name == 'push' }}
+      release: ${{ github.event_name == 'workflow_dispatch' || ((github.event.pull_request.merged == true) && (contains(github.event.pull_request.labels.*.name, 'release'))) }}
+      oidc_role_to_assume: rg_oidc_akr_8qjanws1rj1ocfj5y963
