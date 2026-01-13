@@ -14,19 +14,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref }}
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.3
           rubygems: latest
           bundler-cache: true # 'bundle install' and cache
-      - name: Rubocop
-        run: bundle exec rake rubocop
+      - name: Rubocop auto-fix
+        run: bundle exec rubocop -A || true
 
       - name: Commit linted files
-        if: always()
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "[auto-lint]: Lint files"
+
+      - name: Check for remaining issues
+        run: bundle exec rubocop
 
   clippy_format:
     runs-on: ubuntu-latest
@@ -34,6 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
+          ref: ${{ github.head_ref }}
           submodules: true
 
       - name: Set up Rust
@@ -53,14 +58,19 @@ jobs:
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-v1
 
-      - name: Check clippy
-        run: cargo clippy
+      - name: Format code
+        run: cargo fmt
+
+      - name: Clippy auto-fix
+        run: cargo clippy --fix --allow-dirty --allow-staged || true
+
+      - name: Commit linted files
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: "[auto-lint]: Lint files"
 
       - name: Check formatting
         run: cargo fmt -- --check
 
-      - name: Commit linted files
-        if: always()
-        uses: stefanzweifel/git-auto-commit-action@v7
-        with:
-          commit_message: "[auto-lint]: Lint files"
+      - name: Check clippy
+        run: cargo clippy
