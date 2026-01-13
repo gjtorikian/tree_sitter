@@ -6,6 +6,9 @@ on:
       - "**/*.rb"
       - "**/*.rs"
 
+permissions:
+    contents: write
+
 jobs:
   rubocop:
     runs-on: ubuntu-latest
