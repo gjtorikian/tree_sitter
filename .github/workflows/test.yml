@@ -11,7 +11,7 @@ jobs:
     name: Ruby ${{ matrix.ruby }}
     strategy:
       matrix:
-        ruby: ['3.2', '3.3', '3.4']
+        ruby: ['3.2', '3.3', '3.4', '4.0']
 
     steps:
       - uses: actions/checkout@v6
@@ -25,18 +25,8 @@ jobs:
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Install tree-sitter grammars
-        uses: kettle-rb/ts-grammar-action@v1
-        with:
-          grammars: |
-            rust
-            ruby
-            python
-            javascript
-            go
-            php
-            java
-            c_sharp
+      - name: Build tree-sitter grammars
+        run: make grammars
 
       - name: Compile extension
         run: bundle exec rake compile

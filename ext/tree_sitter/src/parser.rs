@@ -2,6 +2,7 @@ use crate::language::{get_language_internal, Language};
 use crate::tree::Tree;
 use magnus::{prelude::*, Error, RString, Ruby, TryConvert, Value};
 use std::cell::RefCell;
+use std::ops::ControlFlow;
 use std::time::Instant;
 
 #[magnus::wrap(class = "TreeSitter::Parser")]
@@ -90,8 +91,13 @@ impl Parser {
         let result = if timeout > 0 {
             let start = Instant::now();
             let source_bytes = source.as_bytes();
-            let mut progress_callback =
-                |_: &tree_sitter::ParseState| start.elapsed().as_micros() < timeout as u128;
+            let mut progress_callback = |_: &tree_sitter::ParseState| {
+                if start.elapsed().as_micros() < timeout as u128 {
+                    ControlFlow::Continue(())
+                } else {
+                    ControlFlow::Break(())
+                }
+            };
             let options =
                 tree_sitter::ParseOptions::new().progress_callback(&mut progress_callback);
             let mut source_callback = |offset: usize, _: tree_sitter::Point| {

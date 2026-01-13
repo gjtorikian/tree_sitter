@@ -39,5 +39,7 @@ build/
 
 *.orig
 
+/vendor/
+
 .tree-sitter-grammars/
 *.gem
