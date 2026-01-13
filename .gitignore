@@ -40,3 +40,4 @@ build/
 *.orig
 
 .tree-sitter-grammars/
+*.gem
