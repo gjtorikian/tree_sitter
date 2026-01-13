@@ -422,22 +422,6 @@ make ruby python # Ruby and Python
 
 **You can use this Makefile as a reference for your own project! The gem does NOT ship with any grammars!**
 
-### Using ts-grammar-action
-
-For GitHub Actions, use [kettle-rb/ts-grammar-action](https://github.com/kettle-rb/ts-grammar-action):
-
-```yaml
-- uses: kettle-rb/ts-grammar-action@v1
-  with:
-    grammars: |
-      rust
-      ruby
-      python
-      javascript
-```
-
-This sets environment variables like `TREE_SITTER_RUST_PATH` pointing to the installed grammars.
-
 ### Custom Grammar Paths
 
 You can override grammar locations with environment variables:

@@ -25,18 +25,8 @@ jobs:
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Install tree-sitter grammars
-        uses: kettle-rb/ts-grammar-action@v1
-        with:
-          grammars: |
-            rust
-            ruby
-            python
-            javascript
-            go
-            php
-            java
-            c_sharp
+      - name: Build tree-sitter grammars
+        run: make grammars
 
       - name: Compile extension
         run: bundle exec rake compile
