@@ -35,7 +35,11 @@ pub struct Node {
 }
 
 impl Node {
-    pub fn new(ts_node: tree_sitter::Node, source: Arc<String>, tree: Arc<tree_sitter::Tree>) -> Self {
+    pub fn new(
+        ts_node: tree_sitter::Node,
+        source: Arc<String>,
+        tree: Arc<tree_sitter::Tree>,
+    ) -> Self {
         Self {
             tree,
             source,

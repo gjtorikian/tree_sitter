@@ -21,7 +21,11 @@ impl Query {
             )
         })?;
 
-        let capture_names = query.capture_names().iter().map(|s| s.to_string()).collect();
+        let capture_names = query
+            .capture_names()
+            .iter()
+            .map(|s| s.to_string())
+            .collect();
 
         Ok(Self {
             inner: query,
@@ -55,12 +59,7 @@ impl QueryCursor {
         }
     }
 
-    pub fn matches(
-        &self,
-        query: &Query,
-        node: &Node,
-        source: String,
-    ) -> RArray {
+    pub fn matches(&self, query: &Query, node: &Node, source: String) -> RArray {
         let ruby = Ruby::get().unwrap();
         let array = ruby.ary_new();
         let Some(ts_node) = node.get_ts_node_pub() else {
@@ -92,12 +91,7 @@ impl QueryCursor {
         array
     }
 
-    pub fn captures(
-        &self,
-        query: &Query,
-        node: &Node,
-        source: String,
-    ) -> RArray {
+    pub fn captures(&self, query: &Query, node: &Node, source: String) -> RArray {
         let ruby = Ruby::get().unwrap();
         let array = ruby.ary_new();
         let Some(ts_node) = node.get_ts_node_pub() else {

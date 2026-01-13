@@ -36,7 +36,10 @@ impl Point {
     }
 
     pub fn inspect(&self) -> String {
-        format!("#<TreeSitter::Point row={} column={}>", self.row, self.column)
+        format!(
+            "#<TreeSitter::Point row={} column={}>",
+            self.row, self.column
+        )
     }
 
     pub fn eq(&self, other: &Point) -> bool {
