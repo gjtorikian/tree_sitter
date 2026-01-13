@@ -1,0 +1,63 @@
+name: Linting
+
+on:
+  pull_request:
+    paths:
+      - "**/*.rb"
+      - "**/*.rs"
+
+jobs:
+  rubocop:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3
+          rubygems: latest
+          bundler-cache: true # 'bundle install' and cache
+      - name: Rubocop
+        run: bundle exec rake rubocop
+
+      - name: Commit linted files
+        if: always()
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: "[auto-lint]: Lint files"
+
+  clippy_format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+
+      - name: Set up Rust
+        id: toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            tmp/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-v1
+
+      - name: Check clippy
+        run: cargo clippy
+
+      - name: Check formatting
+        run: cargo fmt -- --check
+
+      - name: Commit linted files
+        if: always()
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: "[auto-lint]: Lint files"

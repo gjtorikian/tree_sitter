@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Ruby ${{ matrix.ruby }}
+    strategy:
+      matrix:
+        ruby: ['3.2', '3.3', '3.4']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install tree-sitter grammars
+        uses: kettle-rb/ts-grammar-action@v1
+        with:
+          grammars: |
+            rust
+            ruby
+            python
+            javascript
+            go
+            php
+            java
+            c_sharp
+
+      - name: Compile extension
+        run: bundle exec rake compile
+
+      - name: Run tests
+        run: bundle exec rake test
