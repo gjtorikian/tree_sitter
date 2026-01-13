@@ -81,7 +81,7 @@ impl Node {
     pub fn child(&self, index: usize) -> Option<Node> {
         let ts_node = self.get_ts_node()?;
         ts_node
-            .child(index)
+            .child(index as u32)
             .map(|n| Node::new(n, self.source.clone(), self.tree.clone()))
     }
 
@@ -92,7 +92,7 @@ impl Node {
     pub fn named_child(&self, index: usize) -> Option<Node> {
         let ts_node = self.get_ts_node()?;
         ts_node
-            .named_child(index)
+            .named_child(index as u32)
             .map(|n| Node::new(n, self.source.clone(), self.tree.clone()))
     }
 
